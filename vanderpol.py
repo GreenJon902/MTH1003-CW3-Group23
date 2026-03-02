@@ -1,39 +1,59 @@
-# Constants
-mu = 1
-h = 0.001
+import numpy as np
 
-# Differential Equations
-def dxdt(x, y):
+# Differential Equations ---
+def dxdt(x, y, mu):
     return x - x**3 / 3 - y
 
-def dydt(x, y):
+def dydt(x, y, mu):
     return mu**-1 * x
     
 
-def forward_euler(x0, y0):
+# Time-stepping Schemes ---
+def forward_euler(x0: float, y0: float, h: float, count: int, mu: float) -> [(int, int)]:
+    # Timesteps the Van der Pol equation 'count' times with a time-step of 'h' using the forward-euler scheme.
+    # This uses (x0, y0) as the starting conditions.
+    # Returns a numpy array of the xy-coordinates starting with (x0, y0). This will have length count+1.
+
+    # Create arrays containing the coordinates at each time step, and add first coordinates
     xs = [x0]
     ys = [y0]
 
-    for i in range(100):
+    for i in range(count):
         x, y = xs[-1], ys[-1]
-        xs.append(x + h * dxdt(x, y))
-        ys.append(y + h * dydt(x, y))
+        
+        # Step x,y
+        xs.append(x + h * dxdt(x, y, mu))
+        ys.append(y + h * dydt(x, y, mu))
 
-    return xs[-1], ys[-1]
+    # Convert to [(x0, y0), (x1, y1), ...] and return as a np array
+    return np.array([*zip(xs, ys)])
 
-def midpoint_method(x0, y0):
+def midpoint_method(x0: float, y0: float, h: float, count: int, mu: float) -> [(int, int)]:
+    # Timesteps the Van der Pol equation 'count' times with a time-step of 'h' using the midpoint-method scheme.
+    # This uses (x0, y0) as the starting conditions.
+    # Returns a numpy array of the xy-coordinates starting with (x0, y0). This will have length count+1.
+    
+    # Create arrays containing the coordinates at each time step, and add first coordinates
     xs = [x0]
     ys = [y0]
 
-    for i in range(100):
+    for i in range(count):
         x, y = xs[-1], ys[-1]
-        x_mid = xs[-1] + h / 2 * dxdt(x, y)
-        y_mid = ys[-1] + h / 2 * dydt(x, y)
-        xs.append(x + h * dxdt(x_mid, y_mid))
-        ys.append(y + h * dydt(x_mid, y_mid))
+        
+        # Calculate midpoint
+        x_mid = xs[-1] + h / 2 * dxdt(x, y, mu)
+        y_mid = ys[-1] + h / 2 * dydt(x, y, mu)
+        
+        # Step x,y using the midpoint
+        xs.append(x + h * dxdt(x_mid, y_mid, mu))
+        ys.append(y + h * dydt(x_mid, y_mid, mu))
 
-    return xs[-1], ys[-1]
+    # Convert to [(x0, y0), (x1, y1), ...] and return as a np array
+    return np.array([*zip(xs, ys)])
 
-print(forward_euler(1, 1))
-print(midpoint_method(1, 1))
+
+# Tests ---
+if __name__ == "__main__": 
+    print(forward_euler(1, 1, 0.01, 100, 1))
+    print(midpoint_method(1, 1, 0.01, 100, 1))
 
