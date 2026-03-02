@@ -10,9 +10,9 @@ def dydt(x, y, mu):
 
 # Time-stepping Schemes ---
 def forward_euler(x0: float, y0: float, h: float, count: int, mu: float) -> [(int, int)]:
-    # Timesteps the Van der Pol equation 'count' times with a time-step of 'h' using the forward-euler scheme.
+    # Timesteps the Van der Pol equation `count` times with a time-step of `h` using the forward-euler scheme.
     # This uses (x0, y0) as the starting conditions.
-    # Returns a numpy array of the xy-coordinates starting with (x0, y0). This will have length count+1.
+    # Returns a numpy array of the xy-coordinates starting with (x0, y0). This will have length `count+1`.
 
     # Create arrays containing the coordinates at each time step, and add first coordinates
     xs = [x0]
@@ -29,9 +29,9 @@ def forward_euler(x0: float, y0: float, h: float, count: int, mu: float) -> [(in
     return np.array([*zip(xs, ys)])
 
 def midpoint_method(x0: float, y0: float, h: float, count: int, mu: float) -> [(int, int)]:
-    # Timesteps the Van der Pol equation 'count' times with a time-step of 'h' using the midpoint-method scheme.
+    # Timesteps the Van der Pol equation `count` times with a time-step of `h` using the midpoint-method scheme.
     # This uses (x0, y0) as the starting conditions.
-    # Returns a numpy array of the xy-coordinates starting with (x0, y0). This will have length count+1.
+    # Returns a numpy array of the xy-coordinates starting with (x0, y0). This will have length `count+1`.
     
     # Create arrays containing the coordinates at each time step, and add first coordinates
     xs = [x0]
