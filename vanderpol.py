@@ -57,3 +57,33 @@ if __name__ == "__main__":
     print(forward_euler(1, 1, 0.01, 100, 1))
     print(midpoint_method(1, 1, 0.01, 100, 1))
 
+
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import FancyArrowPatch 
+    
+    fig, ax = plt.subplots()
+    
+    lines = [
+        (forward_euler(1, 1, 0.1, 80, 1), "Forward Euler"),
+        (midpoint_method(1, 1, 0.1, 80, 1), "Midpoint Method")
+    ]
+    
+    for line_data, line_name in lines:
+        
+        # Plot line
+        line2d = ax.plot(*zip(*line_data), label=line_name)[0]  # Only one line returned, so take the first item
+
+        # Plot direction of line
+        for i in range(0,len(line_data) - 2,10):
+            pos1, pos2 = line_data[i:i+2]
+            ar = FancyArrowPatch(pos1, pos2, arrowstyle="->", mutation_scale=20, color=line2d.get_color())
+            ax.add_patch(ar)   
+
+    # Annotate figure    
+    fig.suptitle("Forward Euler vs. Midpoint Method")
+    ax.set_title("80 steps with $(x_0,y_0) = 1$, $h = 0.1$, $\mu = 1$")
+    ax.legend(loc='lower left')  # Show line labels
+
+
+    plt.show()
+
