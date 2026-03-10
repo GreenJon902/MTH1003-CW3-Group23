@@ -59,7 +59,19 @@ if __name__ == "__main__":
 
 
     import matplotlib.pyplot as plt
+    import matplotlib
     from matplotlib.patches import FancyArrowPatch 
+
+    CREATE_PGF = True
+
+    if CREATE_PGF:
+        matplotlib.use("pgf")
+        matplotlib.rcParams.update({
+            "pgf.texsystem": "pdflatex",
+            'font.family': 'serif',
+            'text.usetex': True,
+            'pgf.rcfonts': False
+        })  
     
     fig, ax = plt.subplots()
     
@@ -81,9 +93,11 @@ if __name__ == "__main__":
 
     # Annotate figure    
     fig.suptitle("Forward Euler vs. Midpoint Method")
-    ax.set_title("80 steps with $(x_0,y_0) = 1$, $h = 0.1$, $\mu = 1$")
+    ax.set_title("80 steps with $(x_0,y_0) = (1, 1)$, $h = 0.1$, $\mu = 1$")
     ax.legend(loc='lower left')  # Show line labels
 
-
-    plt.show()
+    if CREATE_PGF:
+        plt.savefig("timestep-comparison-for-vanderpol.pgf")
+    else:
+        plt.show()
 
