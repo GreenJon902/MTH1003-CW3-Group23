@@ -74,6 +74,8 @@ for I in Is:
     ax2.set_title("Phase-Plane")
     ax2.legend() 
     
+    fig.suptitle(f"$I = {float(I)}$")
+
     fig.tight_layout()
     
     if CREATE_PGF:
