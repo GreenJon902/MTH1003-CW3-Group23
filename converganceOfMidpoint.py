@@ -6,6 +6,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
 from vanderpol import midpoint_method as midpointMethod
 
 # parameters
@@ -70,9 +71,19 @@ slope, intercept = np.polyfit(logLowercaseH, logError, 1)
 print("Estimated convergence rate:", slope)
 
 
+CREATE_PGF = True
+
+if CREATE_PGF:
+    matplotlib.use("pgf")
+    matplotlib.rcParams.update({
+        "pgf.texsystem": "pdflatex",
+        'font.family': 'serif',
+        'text.usetex': True,
+        'pgf.rcfonts': False
+    }) 
 
 # plot results
-plt.figure()
+plt.figure(figsize=(6, 4))
 
 # plot measured errors
 plt.loglog(hs, errors, 'o-', label="Measured error")
@@ -88,4 +99,7 @@ plt.title("Convergence of the Midpoint Method")
 
 plt.legend()
 
-plt.show()
+if CREATE_PGF:
+    plt.savefig("convergenceOfMidpoint.pgf")
+else:
+    plt.show()
