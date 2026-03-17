@@ -1,5 +1,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
+
+
+
+CREATE_PGF = False
+CREATE_PGF = True
+
+if CREATE_PGF:
+    matplotlib.use("pgf")
+    matplotlib.rcParams.update({
+        "pgf.texsystem": "pdflatex",
+        'font.family': 'serif',
+        'text.usetex': True,
+        'pgf.rcfonts': False
+    })  
+
+
 
 # Differential Equations ---
 def dxdt(x, y, mu):
@@ -31,64 +48,69 @@ def forward_euler(x0: float, y0: float, h: float, count: int, mu: float) -> [(in
 
   ######################################## Part - 1 #############################################  
 
-x_grid = np.linspace(-3, 3, 20)
-y_grid = np.linspace(-3, 3, 20)
-X, Y = np.meshgrid(x_grid, y_grid)
-null_range = np.linspace(-3, 3, 100)
 start_x, start_y = 0.001, 0.001
+mu1 = 0.1
+mu2 = 4
+mu3 = 100
 
-plt.figure(figsize=(15, 5))
+path1 = forward_euler(start_x, start_y, 0.05, 220, mu1)
+path2 = forward_euler(start_x, start_y, 0.05, 1500, mu2)
+path3 = forward_euler(start_x, start_y, 0.01, 1500, mu3)
+
+null_range = np.linspace(-3, 3, 100)
+x_grid = np.linspace(min([*path1[:,0], *path2[:,0], *path3[:,0], *null_range]), max([*path1[:,0], *path2[:,0], *path3[:,0], *null_range]), 200)
+y_grid = np.linspace(min([*path1[:,1], *path2[:,1], *path3[:,1], *(null_range - null_range**3/3)]), max([*path1[:,1], *path2[:,1], *path3[:,1], *(null_range - null_range**3/3)]), 200)
+X, Y = np.meshgrid(x_grid, y_grid)
+
+plt.figure(figsize=(8, 4))
 
 # Unstable Spiral mu=2
 plt.subplot(1, 3, 1)
-mu1 = 0.1
 U1, V1 = dxdt(X, Y, mu1), dydt(X, Y, mu1)
-plt.streamplot(X, Y, U1, V1, color='gray')
+plt.streamplot(X, Y, U1, V1, color='gray', linewidth=0.5)
 
 # Nullclines [x-nullcline (y = x-(x^3)/3)], [y-nullcline (x = 0)]
 plt.plot(null_range, null_range - null_range**3/3, 'g--', label='x-nullcline')
-plt.plot(np.zeros_like(null_range), null_range, 'm--', label='y-nullcline')
+plt.plot([0, 0], [min(y_grid), max(y_grid)], 'm--', label='y-nullcline')
 
 # Euler path For mu = 2
-path1 = forward_euler(start_x, start_y, 0.05, 150, mu1)
 plt.plot(path1[:, 0], path1[:, 1], 'r', linewidth=2)
-plt.title(f"μ = {mu1} (Spiral)")
+plt.title(f"$\\mu = {mu1}$ (Spiral)")
 plt.grid(True, alpha=0.2)
 
 # Unstable degenerate node mu=4
 plt.subplot(1, 3, 2)
-mu2 = 4
 U2, V2 = dxdt(X, Y, mu2), dydt(X, Y, mu2)
-plt.streamplot(X, Y, U2, V2, color='gray')
+plt.streamplot(X, Y, U2, V2, color='gray', linewidth=0.5)
 
 # Nullclines [x-nullcline (y = x-(x^3)/3)], [y-nullcline (x = 0)]
 plt.plot(null_range, null_range - null_range**3/3, 'g--', label='x-nullcline')
-plt.plot(np.zeros_like(null_range), null_range, 'm--', label='y-nullcline')
+plt.plot([0, 0], [min(y_grid), max(y_grid)], 'm--', label='y-nullcline')
 
 # Euler path for mu = 4
-path2 = forward_euler(start_x, start_y, 0.05, 150, mu2)
 plt.plot(path2[:, 0], path2[:, 1], 'r', linewidth=2)
-plt.title(f"μ = {mu2} (Degenerate Node)")
+plt.title(f"$\\mu = {mu2}$ (Degenerate Node)")
 plt.grid(True, alpha=0.2)
 
 # Unstable node mu=8
 plt.subplot(1, 3, 3)
-mu3 = 100
 U3, V3 = dxdt(X, Y, mu3), dydt(X, Y, mu3)
-plt.streamplot(X, Y, U3, V3, color='gray')
+plt.streamplot(X, Y, U3, V3, color='gray', linewidth=0.5)
 
 # Nullclines [x-nullcline (y = x-(x^3)/3)], [y-nullcline (x = 0)]
 plt.plot(null_range, null_range - null_range**3/3, 'g--', label='x-nullcline')
-plt.plot(np.zeros_like(null_range), null_range, 'm--', label='y-nullcline')
+plt.plot([0, 0], [min(y_grid), max(y_grid)], 'm--', label='y-nullcline')
 
 # Euler path for mu = 8
-path3 = forward_euler(start_x, start_y, 0.05, 150, mu3)
 plt.plot(path3[:, 0], path3[:, 1], 'r', linewidth=2)
-plt.title(f"μ = {mu3} (Node)")
+plt.title(f"$\\mu = {mu3}$ (Node)")
 plt.grid(True, alpha=0.2)
 
 plt.tight_layout()
-plt.show()
+if CREATE_PGF:
+    plt.savefig(f"Numericalsolution_streamplot(1).pgf")
+else:
+    plt.show()
 
   ######################################## Part - 2 #############################################      
 
@@ -108,12 +130,12 @@ def vanderpol_plotting (mu_value):
     
     #Making the function more stable for larger mu values
         h = 0.01 if mu < 4 else 0.002
-        count = 5000 if mu < 4 else 20000
+        count = (5000 if mu < 4 else 20000) if i != 0 else 1500
         t = np.linspace(0, h * count, count + 1)
 
     #Creating the grid for streamplot
-        x_grid = np.linspace(-3, 3, 20)
-        y_grid = np.linspace(-3, 3, 20)
+        x_grid = np.linspace(-5, 5, 20)
+        y_grid = np.linspace(-6, 6, 20)
         X, Y = np.meshgrid(x_grid, y_grid)
     
     #The maximum rage of the nullcline 
@@ -137,31 +159,37 @@ def vanderpol_plotting (mu_value):
         #x-nullcline (y = x-(x^3)/3)
         axp.plot(null_range, null_range - null_range**3/3, 'g--',linestyle = '--', label='x-nullcline')
         #y-nullcline (x = 0)
-        axp.plot(np.zeros_like(null_range), null_range, 'black', linestyle = '--', label='y-nullcline')   
+        axp.plot([0, 0], [min(null_range - null_range**3/3), max(null_range - null_range ** 3/3)], 'black', linestyle = '--', label='y-nullcline')   
     
         #Putting the x an y axes on the plot for clearer viewing
         axp.axhline(0, color = 'darkgreen', alpha = 0.2)
         axp.axvline(0, color = 'darkgreen', alpha = 0.2)
+
+        axp.set_ylim(-6, 6)
     
         #Annotating
-        axp.set_title(f"mu = {mu}")
-        axp.set_xlabel("x-values")
-        axp.set_ylabel("y-values")
-        axp.axis('equal')
+        axp.set_title(f"Phase-Plane: $\\mu = {mu}$")
+        if i == 0: axp.set_xlabel("x-values")
+        if i == 0: axp.set_ylabel("y-values")
+        #axp.axis('equal')
         axp.grid(True,alpha = 0.2)
-        axp.legend(loc='upper right', fontsize='small')
+        axp.legend(loc='upper right')#, fontsize='small')
     
         #Plotting the x and y changes according to time
         axt.plot(t, x_vals, 'r', label='x(t)')
         axt.plot(t, y_vals, 'b', alpha=0.6, label='y(t)')
-        axt.set_title(f"Time Series: mu = {mu}")
-        axt.set_xlabel("Time (t)")
-        axt.set_ylabel("Amplitude")
+        axt.set_title(f"Time-Series: $\\mu = {mu}$")
+        if i == 0: axt.set_xlabel("Time (t)")
+        if i == 0: axt.set_ylabel("Amplitude")
         axt.grid(True, alpha=0.2)
-        axt.legend(loc='upper right', fontsize='x-small')
+        axt.legend(loc='upper right')#, fontsize='x-small')
        
+    fig.set_size_inches(7, 6)
     plt.tight_layout()
-    plt.show
+    if CREATE_PGF:
+        plt.savefig(f"Numericalsolution_streamplot(2).pgf")
+    else:
+        plt.show()
 
 #Desired mu values in the range of 0.1 and 100
 mu_value = [0.1,4,98]
