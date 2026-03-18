@@ -62,7 +62,8 @@ if __name__ == "__main__":
     import matplotlib
     from matplotlib.patches import FancyArrowPatch 
 
-    CREATE_PGF = True
+    # PGF is vector format for latex
+    CREATE_PGF = False
 
     if CREATE_PGF:
         matplotlib.use("pgf")

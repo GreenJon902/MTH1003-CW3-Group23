@@ -71,7 +71,8 @@ slope, intercept = np.polyfit(logLowercaseH, logError, 1)
 print("Estimated convergence rate:", slope)
 
 
-CREATE_PGF = True
+# PGF is vector image for latex
+CREATE_PGF = False
 
 if CREATE_PGF:
     matplotlib.use("pgf")

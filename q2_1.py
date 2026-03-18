@@ -21,8 +21,8 @@ x[0]=0
 y[0]=0 
 
 
+# PGF is vector image format for latex
 CREATE_PGF = False
-CREATE_PGF = True
 
 if CREATE_PGF:
     matplotlib.use("pgf")

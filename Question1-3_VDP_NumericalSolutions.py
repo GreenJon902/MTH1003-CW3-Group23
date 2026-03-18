@@ -4,8 +4,8 @@ import matplotlib
 
 
 
+# PGF is vector graphic for latex
 CREATE_PGF = False
-CREATE_PGF = True
 
 if CREATE_PGF:
     matplotlib.use("pgf")
@@ -53,11 +53,15 @@ mu1 = 0.1
 mu2 = 4
 mu3 = 100
 
+# Paths of the nullclines
 path1 = forward_euler(start_x, start_y, 0.05, 220, mu1)
 path2 = forward_euler(start_x, start_y, 0.05, 1500, mu2)
 path3 = forward_euler(start_x, start_y, 0.01, 1500, mu3)
 
+# X coordinates of nullclines
 null_range = np.linspace(-3, 3, 100)
+
+# Set up meshgrid for streamplots
 x_grid = np.linspace(min([*path1[:,0], *path2[:,0], *path3[:,0], *null_range]), max([*path1[:,0], *path2[:,0], *path3[:,0], *null_range]), 200)
 y_grid = np.linspace(min([*path1[:,1], *path2[:,1], *path3[:,1], *(null_range - null_range**3/3)]), max([*path1[:,1], *path2[:,1], *path3[:,1], *(null_range - null_range**3/3)]), 200)
 X, Y = np.meshgrid(x_grid, y_grid)
@@ -105,6 +109,7 @@ plt.plot([0, 0], [min(y_grid), max(y_grid)], 'm--', label='y-nullcline')
 plt.plot(path3[:, 0], path3[:, 1], 'r', linewidth=2)
 plt.title(f"$\\mu = {mu3}$ (Node)")
 plt.grid(True, alpha=0.2)
+plt.ylim(-6, 6)
 
 plt.tight_layout()
 if CREATE_PGF:
