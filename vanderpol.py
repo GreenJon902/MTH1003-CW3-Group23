@@ -63,7 +63,7 @@ if __name__ == "__main__":
     from matplotlib.patches import FancyArrowPatch 
 
     # PGF is vector format for latex
-    CREATE_PGF = False
+    CREATE_PGF = True
 
     if CREATE_PGF:
         matplotlib.use("pgf")
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     #ax.set_title("80 steps with $(x_0,y_0) = (1, 1)$, $h = 0.1$, $\mu = 1$")
     ax.legend(loc='lower left')  # Show line labels
 
-    fig.set_size_inches(7, 2.5)
+    fig.set_size_inches(7, 4)
     fig.tight_layout()
     if CREATE_PGF:
         plt.savefig("timestep-comparison-for-vanderpol.pgf")

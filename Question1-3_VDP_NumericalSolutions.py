@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+from vanderpol import forward_euler, dxdt, dydt
 
 
 
@@ -18,33 +19,6 @@ if CREATE_PGF:
 
 
 
-# Differential Equations ---
-def dxdt(x, y, mu):
-    return x - x**3 / 3 - y
-
-def dydt(x, y, mu):
-    return mu**-1 * x
-    
-
-# Time-stepping Schemes ---
-def forward_euler(x0: float, y0: float, h: float, count: int, mu: float) -> [(int, int)]:
-    # Timesteps the Van der Pol equation `count` times with a time-step of `h` using the forward-euler scheme.
-    # This uses (x0, y0) as the starting conditions.
-    # Returns a numpy array of the xy-coordinates starting with (x0, y0). This will have length `count+1`.
-
-    # Create arrays containing the coordinates at each time step, and add first coordinates
-    xs = [x0]
-    ys = [y0]
-
-    for i in range(count):
-        x, y = xs[-1], ys[-1]
-        
-        # Step x,y
-        xs.append(x + h * dxdt(x, y, mu))
-        ys.append(y + h * dydt(x, y, mu))
-
-    # Convert to [(x0, y0), (x1, y1), ...] and return as a np array
-    return np.array([*zip(xs, ys)])
 
   ######################################## Part - 1 #############################################  
 
@@ -66,7 +40,7 @@ x_grid = np.linspace(min([*path1[:,0], *path2[:,0], *path3[:,0], *null_range]), 
 y_grid = np.linspace(min([*path1[:,1], *path2[:,1], *path3[:,1], *(null_range - null_range**3/3)]), max([*path1[:,1], *path2[:,1], *path3[:,1], *(null_range - null_range**3/3)]), 200)
 X, Y = np.meshgrid(x_grid, y_grid)
 
-plt.figure(figsize=(8, 4))
+plt.figure(figsize=(8, 2))
 
 # Unstable Spiral mu=2
 plt.subplot(1, 3, 1)

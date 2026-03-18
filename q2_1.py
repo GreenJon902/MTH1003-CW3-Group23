@@ -7,7 +7,7 @@ import matplotlib
 mu=10 
 a=0.8 
 b=0.7 
-Is = [0, 0.5, 1, 1.5, 2] # vary I with 0 ≤ I ≤ 2 
+Is = [0, 0.5, 1, 1.5, 2] # vary I with 0 <= I <= 2 
 
 # Time setup 
 dt=0.01 
